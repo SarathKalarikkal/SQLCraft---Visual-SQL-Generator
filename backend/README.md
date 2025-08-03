@@ -32,7 +32,7 @@ A lightweight API to automatically **generate SQL Server stored procedures** (CR
 
 2. Install dependencies: npm install
    
-3. mkdir generated Templates logs
+3. mkdir generated, Templates, logs
    
 4.Add a .env file at project root:
     PORT=port
