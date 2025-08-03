@@ -1,0 +1,32 @@
+@keyframes floatUpCreative {
+  0% {
+    transform: translateY(200vh) translateX(0);
+    opacity: 0;
+    filter: blur(2px);
+  }
+  30% {
+    opacity: 0.5;
+    filter: blur(0px);
+  }
+  70% {
+    opacity: 0.5;
+    filter: blur(0.3px);
+  }
+  100% {
+    transform: translateY(-120vh) translateX(20px);
+    opacity: 0;
+    filter: blur(2px);
+  }
+}
+
+.animate-float {
+  animation-name: floatUpCreative;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  will-change: transform, opacity;
+
+}
+.floating-text {
+  text-shadow: 0 0 6px #5ddcff, 0 0 12px #2196f3;
+  opacity: 0.8;
+}
