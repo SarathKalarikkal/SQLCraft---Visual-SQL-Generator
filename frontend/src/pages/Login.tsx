@@ -44,7 +44,7 @@ const Login = () => {
   const navigate = useNavigate();
 
   const submitHandler = () => {
-    navigate("/home");
+    navigate("/main/home");
   };
 
   return (

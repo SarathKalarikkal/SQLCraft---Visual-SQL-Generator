@@ -11,7 +11,7 @@ const Sidebar = ({isMenu}:{isMenu:boolean}) => {
             </h1> */}
             <div className="flex flex-col gap-2">
               <NavLink
-                to={"/home"}
+                to={"/main/home"}
                 className={({ isActive }) =>
                   `flex items-center gap-3 px-3 py-2 rounded-lg ${
                     isActive ? "bg-[#223649]" : ""
@@ -39,7 +39,7 @@ const Sidebar = ({isMenu}:{isMenu:boolean}) => {
                 </p>
               </NavLink>
              
-              <NavLink to={"/tables"} className={({ isActive }) =>
+              <NavLink to={"/main/tables"} className={({ isActive }) =>
                   `flex items-center gap-3 px-3 py-2 rounded-lg ${
                     isActive ? "bg-[#223649]" : ""
                   }`
@@ -68,7 +68,7 @@ const Sidebar = ({isMenu}:{isMenu:boolean}) => {
                 </p>
               </NavLink>
              
-              <NavLink  to={"/storedProcedures"} className={({ isActive }) =>
+              <NavLink  to={"/main/storedProcedures"} className={({ isActive }) =>
                   `flex items-center gap-3 px-3 py-2 rounded-lg ${
                     isActive ? "bg-[#223649]" : ""
                   }`
@@ -96,7 +96,7 @@ const Sidebar = ({isMenu}:{isMenu:boolean}) => {
                   Stored Procedures
                 </p>
               </NavLink>
-              <NavLink to={"/functions"} className={({ isActive }) =>
+              <NavLink to={"/main/functions"} className={({ isActive }) =>
                   `flex items-center gap-3 px-3 py-2 rounded-lg ${
                     isActive ? "bg-[#223649]" : ""
                   }`
@@ -121,7 +121,7 @@ const Sidebar = ({isMenu}:{isMenu:boolean}) => {
                   Functions
                 </p>
               </NavLink>
-              <NavLink to={"/triggers"} className={({ isActive }) =>
+              <NavLink to={"/main/triggers"} className={({ isActive }) =>
                   `flex items-center gap-3 px-3 py-2 rounded-lg ${
                     isActive ? "bg-[#223649]" : ""
                   }`
@@ -149,7 +149,7 @@ const Sidebar = ({isMenu}:{isMenu:boolean}) => {
             </div>
           </div>
           <div className="flex flex-col gap-1">
-            <NavLink to={"/helpandocs"} className={({ isActive }) =>
+            <NavLink to={"/main/helpandocs"} className={({ isActive }) =>
                   `flex items-center gap-3 px-3 py-2 rounded-lg ${
                     isActive ? "bg-[#223649]" : ""
                   }`
@@ -174,7 +174,7 @@ const Sidebar = ({isMenu}:{isMenu:boolean}) => {
                 Help and docs
               </p>
             </NavLink>
-            <NavLink to={"/inviteTeam"} className={({ isActive }) =>
+            <NavLink to={"/main/inviteTeam"} className={({ isActive }) =>
                   `flex items-center gap-3 px-3 py-2 rounded-lg ${
                     isActive ? "bg-[#223649]" : ""
                   }`

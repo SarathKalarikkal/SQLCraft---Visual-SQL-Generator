@@ -40,7 +40,8 @@ const TableCreator = ({
                 <input
                   placeholder="Enter table name"
                   className="form-input h-14 text-white bg-[#182634] border border-[#314d68] rounded-lg p-[15px] text-base placeholder:text-[#90adcb]"
-                  value=""
+                  name="table"
+                    type="text"
                 />
               </label>
             </div>

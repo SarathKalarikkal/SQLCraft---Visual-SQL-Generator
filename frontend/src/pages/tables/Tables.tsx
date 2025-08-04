@@ -1,11 +1,37 @@
-
 import { useState } from "react";
 import "./Tables.css";
 import TableCreator from "../../components/TableCreator";
 
 const Tables = () => {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
-const [isOpen,setIsOpen] =useState<boolean>(false)
+  const users = [
+    {
+      name: "Users",
+      columns: "id, name, email, password",
+      created: "2023-08-15",
+    },
+    {
+      name: "Products",
+      columns: "id, name, description, price",
+      created: "2023-08-16",
+    },
+    {
+      name: "Orders",
+      columns: "id, user_id, product_id, quantity",
+      created: "2023-08-17",
+    },
+    {
+      name: "Reviews",
+      columns: "id, product_id, user_id, rating, comment",
+      created: "2023-08-18",
+    },
+    {
+      name: "Categories",
+      columns: "id, name",
+      created: "2023-08-19",
+    },
+  ];
 
   return (
     <div
@@ -15,7 +41,6 @@ const [isOpen,setIsOpen] =useState<boolean>(false)
       <div className="flex h-full grow flex-col">
         <div className="">
           <div className="flex flex-col flex-1 gap-4">
-
             <div className="flex flex-wrap justify-between gap-3">
               <div className="flex min-w-72 flex-col gap-3">
                 <p className="text-white tracking-light text-[32px] font-bold leading-tight">
@@ -25,28 +50,30 @@ const [isOpen,setIsOpen] =useState<boolean>(false)
                   Manage your database tables
                 </p>
               </div>
-              <div onClick={()=>setIsOpen(true)}
-               className="p-4 flex gap-3 rounded-lg border border-[#314d68] bg-[#182634] hover:bg-[#314d68]  items-center cursor-pointer">
-                  <div
-                    className="text-white"
-                    data-icon="Table"
-                    data-size="24px"
-                    data-weight="regular"
+              <div
+                onClick={() => setIsOpen(true)}
+                className="p-4 flex gap-3 rounded-lg border border-[#314d68] bg-[#182634] hover:bg-[#314d68]  items-center cursor-pointer"
+              >
+                <div
+                  className="text-white"
+                  data-icon="Table"
+                  data-size="24px"
+                  data-weight="regular"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24px"
+                    height="24px"
+                    fill="currentColor"
+                    viewBox="0 0 256 256"
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24px"
-                      height="24px"
-                      fill="currentColor"
-                      viewBox="0 0 256 256"
-                    >
-                      <path d="M224,48H32a8,8,0,0,0-8,8V192a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A8,8,0,0,0,224,48ZM40,112H80v32H40Zm56,0H216v32H96ZM216,64V96H40V64ZM40,160H80v32H40Zm176,32H96V160H216v32Z"></path>
-                    </svg>
-                  </div>
-                  <span className="text-white text-base font-bold leading-tight">
-                    Create Table
-                  </span>
+                    <path d="M224,48H32a8,8,0,0,0-8,8V192a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A8,8,0,0,0,224,48ZM40,112H80v32H40Zm56,0H216v32H96ZM216,64V96H40V64ZM40,160H80v32H40Zm176,32H96V160H216v32Z"></path>
+                  </svg>
                 </div>
+                <span className="text-white text-base font-bold leading-tight">
+                  Create Table
+                </span>
+              </div>
             </div>
 
             <div className="">
@@ -71,8 +98,8 @@ const [isOpen,setIsOpen] =useState<boolean>(false)
                   <input
                     placeholder="Search tables"
                     className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-white focus:outline-0 focus:ring-0 border-none bg-[#223649] focus:border-none h-full placeholder:text-[#90adcb] px-4 rounded-l-none border-l-0 pl-2 text-base font-normal leading-normal"
-                    value=""
-                    readOnly
+                    name="search"
+                    type="text"
                   />
                 </div>
               </label>
@@ -80,7 +107,9 @@ const [isOpen,setIsOpen] =useState<boolean>(false)
 
             <div className="flex gap-3 flex-wrap">
               <button className="flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-[#223649] pl-4 pr-2">
-                <p className="text-white text-sm font-medium leading-normal">Created</p>
+                <p className="text-white text-sm font-medium leading-normal">
+                  Created
+                </p>
                 <div
                   className="text-white"
                   data-icon="CaretDown"
@@ -99,7 +128,9 @@ const [isOpen,setIsOpen] =useState<boolean>(false)
                 </div>
               </button>
               <button className="flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-[#223649] pl-4 pr-2">
-                <p className="text-white text-sm font-medium leading-normal">Last Edited</p>
+                <p className="text-white text-sm font-medium leading-normal">
+                  Last Edited
+                </p>
                 <div
                   className="text-white"
                   data-icon="CaretDown"
@@ -139,44 +170,21 @@ const [isOpen,setIsOpen] =useState<boolean>(false)
                     </tr>
                   </thead>
                   <tbody>
-                    {[
-                      {
-                        name: "Users",
-                        columns: "id, name, email, password",
-                        created: "2023-08-15",
-                      },
-                      {
-                        name: "Products",
-                        columns: "id, name, description, price",
-                        created: "2023-08-16",
-                      },
-                      {
-                        name: "Orders",
-                        columns: "id, user_id, product_id, quantity",
-                        created: "2023-08-17",
-                      },
-                      {
-                        name: "Reviews",
-                        columns: "id, product_id, user_id, rating, comment",
-                        created: "2023-08-18",
-                      },
-                      {
-                        name: "Categories",
-                        columns: "id, name",
-                        created: "2023-08-19",
-                      },
-                    ].map(({ name, columns, created }, i) => (
-                      <tr key={name} className="border-t border-t-[#314d68]">
-                        <td className="table-column-120 h-[72px] px-4 py-2 w-[400px] text-white text-sm font-normal leading-normal">
+                    {users.map(({ name, columns, created }, i) => (
+                      <tr
+                        key={name}
+                        className="border-t border-t-[#314d68] hover:bg-[#1b2b3a] transition"
+                      >
+                        <td className=" table-column-120 h-[72px] px-4 py-2 w-[400px] text-white text-sm font-normal leading-normal">
                           {name}
                         </td>
-                        <td className="table-column-240 h-[72px] px-4 py-2 w-[400px] text-[#90adcb] text-sm font-normal leading-normal">
+                        <td className=" table-column-240 h-[72px] px-4 py-2 w-[400px] text-[#90adcb] text-sm font-normal leading-normal">
                           {columns}
                         </td>
-                        <td className="table-column-360 h-[72px] px-4 py-2 w-[400px] text-[#90adcb] text-sm font-normal leading-normal">
+                        <td className=" table-column-360 h-[72px] px-4 py-2 w-[400px] text-[#90adcb] text-sm font-normal leading-normal">
                           {created}
                         </td>
-                        <td className="table-column-480 h-[72px] px-4 py-2 w-60 text-[#90adcb] text-sm font-bold leading-normal tracking-[0.015em]">
+                        <td className=" table-column-480 h-[72px] px-4 py-2 w-60 text-[#90adcb] text-sm font-bold leading-normal tracking-[0.015em]">
                           Edit | Delete | Duplicate
                         </td>
                       </tr>
@@ -189,12 +197,11 @@ const [isOpen,setIsOpen] =useState<boolean>(false)
         </div>
       </div>
 
-                    {
-                      isOpen && <div className="absolute top-0 left-0 bg-[#182634a1] w-full h-screen z-30 flex justify-center items-center">
-                        <TableCreator setIsOpen={setIsOpen} />
-                      </div>
-                    }
-
+      {isOpen && (
+        <div className="absolute top-0 left-0 bg-[#182634a1] w-full h-screen z-30 flex justify-center items-center">
+          <TableCreator setIsOpen={setIsOpen} />
+        </div>
+      )}
     </div>
   );
 };

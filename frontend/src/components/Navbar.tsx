@@ -90,7 +90,7 @@ const Navbar = ({
               )}
             </AnimatePresence>
           </button>
-          <button className="hidden md:flex  max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-[#223649] text-white gap-2 text-sm font-bold leading-normal tracking-[0.015em] min-w-0 px-2.5">
+          <button className="hover:bg-[#314d68] hidden md:flex  max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-[#223649] text-white gap-2 text-sm font-bold leading-normal tracking-[0.015em] min-w-0 px-2.5">
             <div
               className="text-white"
               data-icon="Bell"
@@ -108,7 +108,7 @@ const Navbar = ({
               </svg>
             </div>
           </button>
-          <button className="hidden md:flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-[#223649] text-white gap-2 text-sm font-bold leading-normal tracking-[0.015em] min-w-0 px-2.5">
+          <button className="hover:bg-[#314d68] hidden md:flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-[#223649] text-white gap-2 text-sm font-bold leading-normal tracking-[0.015em] min-w-0 px-2.5">
             <div
               className="text-white"
               data-icon="Question"
@@ -160,7 +160,7 @@ const Navbar = ({
 
             <div className="border-t border-[#2e4a60] my-1" />
 
-            <button onClick={()=>navigate("/login")} className="flex items-center cursor-pointer gap-2 px-3 py-2 text-sm text-white rounded-md hover:bg-[#2e4a60] transition-colors">
+            <button onClick={()=>navigate("/")} className="flex items-center cursor-pointer gap-2 px-3 py-2 text-sm text-white rounded-md hover:bg-[#2e4a60] transition-colors">
               {/* Sign Out Icon */}
               <svg
                 xmlns="http://www.w3.org/2000/svg"

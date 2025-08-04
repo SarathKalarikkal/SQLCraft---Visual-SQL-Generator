@@ -1,17 +1,24 @@
-const CreateSP = () => {
+const SPcreator = ({
+  setIsOpen,
+}: {
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
   return (
     <div
-      className=" flex size-full min-h-screen flex-col bg-[#101a23]"
+      className=" flex size-full flex-col bg-[#101a23] w-[90%] h-[90%] overflow-auto p-10 rounded-md"
       style={{ fontFamily: 'Inter, Noto Sans, sans-serif' }}
     >
       <div className="flex h-full grow flex-col">
-        <div className="px-20 flex flex-1 justify-center py-5">
-          <div className="layout-content-container flex flex-col w-[512px] max-w-[960px] py-5 flex-1">
-            <div className="flex flex-wrap justify-between gap-3 p-4">
-              <p className="text-white text-[32px] font-bold leading-tight min-w-72 tracking-tight">
-                Create Stored Procedure
-              </p>
-            </div>
+        <div className=" flex flex-1 justify-center ">
+          <div className="layout-content-container flex flex-col py-5 flex-1">
+           <div className="flex flex-row justify-between items-center">
+             <h2 className="text-white text-[28px] font-bold px-4 pb-3 ">
+              Create Table
+            </h2>
+             <button onClick={()=>setIsOpen(false)} className="h-10 px-4 bg-[#223649] hover:bg-[#314d68] text-white text-sm font-bold rounded-lg cursor-pointer">
+                 Close
+                </button>
+           </div>
 
             {/* Procedure Name Input */}
             <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
@@ -22,7 +29,8 @@ const CreateSP = () => {
                 <input
                   placeholder="Enter procedure name"
                   className="form-input w-full flex-1 rounded-lg border border-[#314d68] bg-[#182634] text-white placeholder-[#90adcb] p-[15px] h-14 text-base font-normal leading-normal focus:outline-none focus:ring-0"
-                  value=""
+                  name="procedure"
+                    type="text"
                 />
               </label>
             </div>
@@ -122,4 +130,4 @@ const CreateSP = () => {
   );
 };
 
-export default CreateSP;
+export default SPcreator;

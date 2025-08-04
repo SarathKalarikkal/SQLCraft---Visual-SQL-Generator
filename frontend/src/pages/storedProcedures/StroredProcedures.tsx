@@ -1,6 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
+import SPcreator from "../../components/SPcreator";
 
 const StoredProcedure: React.FC = () => {
+
+const [isOpen, setIsOpen] =useState<boolean>(false)
+
   const procedureData = [
     {
       name: "GetCustomerDetails",
@@ -22,6 +26,8 @@ const StoredProcedure: React.FC = () => {
   ];
 
   return (
+    
+    <>
     <div
       className="root  flex flex-col bg-[#101a23] dark group-design-root overflow-hidden "
       style={{ fontFamily: 'Inter, "Noto Sans", sans-serif' }}
@@ -38,12 +44,13 @@ const StoredProcedure: React.FC = () => {
                   Manage your procedures
                 </p>
               </div>
-              <div className="p-4 flex gap-3 rounded-lg border border-[#314d68] bg-[#182634]  items-center">
+              <div onClick={()=>setIsOpen(true)} className="cursor-pointer p-4 flex gap-3 rounded-lg border border-[#314d68] bg-[#182634]  items-center">
                 <div
-                  className="text-white"
+                  className="text-white "
                   data-icon="Table"
                   data-size="24px"
                   data-weight="regular"
+                  
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -83,8 +90,8 @@ const StoredProcedure: React.FC = () => {
                   <input
                     placeholder="Search tables"
                     className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-white focus:outline-0 focus:ring-0 border-none bg-[#223649] focus:border-none h-full placeholder:text-[#90adcb] px-4 rounded-l-none border-l-0 pl-2 text-base font-normal leading-normal"
-                    value=""
-                    readOnly
+                    name="search"
+                    type="text"
                   />
                 </div>
               </label>
@@ -193,6 +200,14 @@ const StoredProcedure: React.FC = () => {
         </div>
       </div>
     </div>
+
+    {
+      isOpen &&
+      <div className="absolute top-0 left-0 bg-[#182634a1] w-full h-screen z-30 flex justify-center items-center">
+          <SPcreator setIsOpen={setIsOpen}/>
+      </div>
+    }
+    </>
   );
 };
 

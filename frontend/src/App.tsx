@@ -19,10 +19,9 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/login" element={<Login />} />
+        <Route path="/" element={<Login />} />
 
-        <Route path="/*" element={<MainLayout />}>
-          <Route index element={<Navigate to="home" replace />} />
+        <Route path="/main*" element={<MainLayout />}>
           <Route path="home" element={<Home />} />
           <Route path="tables" element={<Tables />} />
           <Route path="storedProcedures" element={<StoredProcedure />} />
