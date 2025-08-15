@@ -1,209 +1,238 @@
-import { useState } from "react";
-import "./Tables.css";
-import TableCreator from "../../components/TableCreator";
+  import { useState, useEffect } from "react";
+  import "./Tables.css";
+  import TableCreator from "../../components/TableCreator";
+  import { useAxios } from "../../hooks/useAxios";
+  import Loader from "../../hooks/loader";
+  import { Eye, SquarePen, Trash } from "lucide-react";
+  import DeletePopup from "../../components/DeletePopup";
+  import Toast from "../../components/Toast";
 
-const Tables = () => {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  interface Column {
+    id?: string;
+    name: string;
+    type: string;
+    isPrimary: boolean;
+    isNullable: boolean;
+    description?: string;
+  }
 
-  const users = [
-    {
-      name: "Users",
-      columns: "id, name, email, password",
-      created: "2023-08-15",
-    },
-    {
-      name: "Products",
-      columns: "id, name, description, price",
-      created: "2023-08-16",
-    },
-    {
-      name: "Orders",
-      columns: "id, user_id, product_id, quantity",
-      created: "2023-08-17",
-    },
-    {
-      name: "Reviews",
-      columns: "id, product_id, user_id, rating, comment",
-      created: "2023-08-18",
-    },
-    {
-      name: "Categories",
-      columns: "id, name",
-      created: "2023-08-19",
-    },
-  ];
+  interface Table {
+    tableId: string;
+    tableName: string;
+    description: string;
+    created_at: string;
+    modify_date: string;
+    columns: Column[];
+  }
 
-  return (
-    <div
-      className="root  flex flex-col bg-[#101a23] dark group-design-root overflow-hidden "
-      style={{ fontFamily: 'Inter, "Noto Sans", sans-serif' }}
-    >
-      <div className="flex h-full grow flex-col">
-        <div className="">
-          <div className="flex flex-col flex-1 gap-4">
-            <div className="flex flex-wrap justify-between gap-3">
-              <div className="flex min-w-72 flex-col gap-3">
-                <p className="text-white tracking-light text-[32px] font-bold leading-tight">
-                  Tables
-                </p>
-                <p className="text-[#90adcb] text-sm font-normal leading-normal">
-                  Manage your database tables
-                </p>
-              </div>
-              <div
-                onClick={() => setIsOpen(true)}
-                className="p-4 flex gap-3 rounded-lg border border-[#314d68] bg-[#182634] hover:bg-[#314d68]  items-center cursor-pointer"
-              >
-                <div
-                  className="text-white"
-                  data-icon="Table"
-                  data-size="24px"
-                  data-weight="regular"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24px"
-                    height="24px"
-                    fill="currentColor"
-                    viewBox="0 0 256 256"
-                  >
-                    <path d="M224,48H32a8,8,0,0,0-8,8V192a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A8,8,0,0,0,224,48ZM40,112H80v32H40Zm56,0H216v32H96ZM216,64V96H40V64ZM40,160H80v32H40Zm176,32H96V160H216v32Z"></path>
-                  </svg>
-                </div>
-                <span className="text-white text-base font-bold leading-tight">
-                  Create Table
-                </span>
-              </div>
+  interface TablesResponse {
+    tables: Table[];
+  }
+  
+
+  const Tables = () => {
+    const [isOpen, setIsOpen] = useState<boolean>(false);
+    const [isDelete, setIsDelete] = useState<boolean>(false);
+    const [deleteItemId, setDeleteItemId] = useState<string>("");
+    const [deleteItemName, setDeleteItemName] = useState<string>("");
+    const [toast, setToast] = useState<{ message: string; type?: "success" | "error" } | null>(null);
+    const [posts, setPosts] = useState<TablesResponse>({ tables: [] });
+    const [viewTable, setViewTable] = useState<Table | null>(null); 
+    const [isViewMode, setIsViewMode] = useState<boolean>(false);
+
+    const baseUrl = "http://localhost:3000/api/tableslists";
+
+    const { data, loading, error } = useAxios<TablesResponse>(
+      { url: baseUrl, method: "GET" },
+      [baseUrl]
+    );
+
+    // Sync axios data with local state
+    useEffect(() => {
+      if (data) setPosts(data);
+    }, [data]);
+
+    const handleDelete = async (id: string) => {
+      try {
+        const response = await fetch(`http://localhost:3000/api/tables/${id}`, { method: "DELETE" });
+        const result = await response.json();
+
+        if (!response.ok) {
+          setToast({ message: result.error || "Failed to delete table", type: "error" });
+          return;
+        }
+
+        const updatedTables = posts.tables.filter((table) => table.tableId !== id);
+        setPosts({ tables: updatedTables });
+
+        setToast({ message: "Table deleted successfully!", type: "success" });
+        setIsDelete(false);
+        setDeleteItemId("");
+        setDeleteItemName("");
+      } catch (error: any) {
+        console.error(error);
+        setToast({ message: `Something went wrong: ${error.message}`, type: "error" });
+      }
+    };
+
+    const handleSaveTable = async (tableData: any) => {
+      try {
+        const response = await fetch("http://localhost:3000/api/create-table", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(tableData),
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          setToast({ message: `Table created successfully! Table ID: ${result.tableId}`, type: "success" });
+          setIsOpen(false);
+          setPosts((prev) => ({
+            tables: [
+              {
+                tableId: result.tableId,
+                tableName: tableData.tableName,
+                description: tableData.description || "",
+                created_at: new Date().toISOString(),
+                modify_date: new Date().toISOString(),
+                columns: tableData.columns,
+              },
+              ...prev.tables,
+            ],
+          }));
+        } else {
+          setToast({ message: result.error || "Error creating table", type: "error" });
+        }
+      } catch (error: any) {
+        console.error(error);
+        setToast({ message: `Something went wrong: ${error.message}`, type: "error" });
+      }
+    };
+
+    // Fetch single table details for viewing
+    const handleViewTable = async (id: string) => {
+      try {
+        const response = await fetch(`http://localhost:3000/api/table/${id}`);
+        const result = await response.json();
+
+        if (!response.ok) {
+          setToast({ message: result.error || "Failed to fetch table details", type: "error" });
+          return;
+        }
+
+        setViewTable(result.table);
+        setIsViewMode(true); // mark as view mode
+        setIsOpen(true); // open modal
+      } catch (error: any) {
+        console.error(error);
+        setToast({ message: `Something went wrong: ${error.message}`, type: "error" });
+      }
+    };
+
+    return (
+      <div className="root flex flex-col bg-[#101a23] dark group-design-root overflow-hidden" style={{ fontFamily: 'Inter, "Noto Sans", sans-serif' }}>
+        <div className="flex h-full grow flex-col">
+          {/* Header and Create Table button */}
+          <div className="flex flex-wrap justify-between gap-3">
+            <div className="flex min-w-72 flex-col gap-3">
+              <p className="text-white tracking-light text-[32px] font-bold leading-tight">Tables</p>
+              <p className="text-[#90adcb] text-sm font-normal leading-normal">Manage your database tables</p>
             </div>
-
-            <div className="">
-              <label className="flex flex-col min-w-40 h-12 w-full">
-                <div className="flex w-full flex-1 items-stretch rounded-lg h-full">
-                  <div
-                    className="text-[#90adcb] flex border-none bg-[#223649] items-center justify-center pl-4 rounded-l-lg border-r-0"
-                    data-icon="MagnifyingGlass"
-                    data-size="24px"
-                    data-weight="regular"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24px"
-                      height="24px"
-                      fill="currentColor"
-                      viewBox="0 0 256 256"
-                    >
-                      <path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"></path>
-                    </svg>
-                  </div>
-                  <input
-                    placeholder="Search tables"
-                    className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-white focus:outline-0 focus:ring-0 border-none bg-[#223649] focus:border-none h-full placeholder:text-[#90adcb] px-4 rounded-l-none border-l-0 pl-2 text-base font-normal leading-normal"
-                    name="search"
-                    type="text"
-                  />
-                </div>
-              </label>
+            <div onClick={() => { setIsOpen(true); setIsViewMode(false); setViewTable(null); }} className="p-4 flex gap-3 rounded-lg border border-[#314d68] bg-[#182634] hover:bg-[#314d68] items-center cursor-pointer">
+              <span className="text-white text-base font-bold leading-tight">Create Table</span>
             </div>
+          </div>
 
-            <div className="flex gap-3 flex-wrap">
-              <button className="flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-[#223649] pl-4 pr-2">
-                <p className="text-white text-sm font-medium leading-normal">
-                  Created
-                </p>
-                <div
-                  className="text-white"
-                  data-icon="CaretDown"
-                  data-size="20px"
-                  data-weight="regular"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="20px"
-                    height="20px"
-                    fill="currentColor"
-                    viewBox="0 0 256 256"
-                  >
-                    <path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"></path>
-                  </svg>
-                </div>
-              </button>
-              <button className="flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-[#223649] pl-4 pr-2">
-                <p className="text-white text-sm font-medium leading-normal">
-                  Last Edited
-                </p>
-                <div
-                  className="text-white"
-                  data-icon="CaretDown"
-                  data-size="20px"
-                  data-weight="regular"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="20px"
-                    height="20px"
-                    fill="currentColor"
-                    viewBox="0 0 256 256"
-                  >
-                    <path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"></path>
-                  </svg>
-                </div>
-              </button>
-            </div>
-
-            <div className="container-query">
+          {/* Table List */}
+          <div className="container-query mt-6">
+            {error ? (
+              <p className="text-gray-400 text-sm">Error: {error}</p>
+            ) : loading ? (
+              <div className="mt-[50px]"><Loader variant="bars" label="Loading Tables" showLabel /></div>
+            ) : (
               <div className="flex overflow-hidden rounded-lg border border-[#314d68] bg-[#101a23]">
                 <table className="flex-1">
                   <thead>
                     <tr className="bg-[#182634]">
-                      <th className="table-column-120 px-4 py-3 text-left text-white w-[400px] text-sm font-medium leading-normal">
-                        Table Name
-                      </th>
-                      <th className="table-column-240 px-4 py-3 text-left text-white w-[400px] text-sm font-medium leading-normal">
-                        Columns
-                      </th>
-                      <th className="table-column-360 px-4 py-3 text-left text-white w-[400px] text-sm font-medium leading-normal">
-                        Created
-                      </th>
-                      <th className="table-column-480 px-4 py-3 text-left text-white w-60 text-[#90adcb] text-sm font-medium leading-normal">
-                        Actions
-                      </th>
+                      <th className="px-4 py-3 text-left text-white w-[200px] text-sm font-medium">Name</th>
+                      <th className="px-4 py-3 text-left text-white w-[300px] text-sm font-medium">Description</th>
+                      <th className="px-4 py-3 text-left text-white w-[100px] text-sm font-medium">Columns Count</th>
+                      <th className="px-4 py-3 text-left text-white w-[150px] text-sm font-medium">Created</th>
+                      <th className="px-4 py-3 text-left text-white w-[150px] text-sm font-medium">Updated</th>
+                      <th className="px-4 py-3 text-left text-white w-[150px] text-sm font-medium"></th>
                     </tr>
                   </thead>
                   <tbody>
-                    {users.map(({ name, columns, created }, i) => (
-                      <tr
-                        key={name}
-                        className="border-t border-t-[#314d68] hover:bg-[#1b2b3a] transition"
-                      >
-                        <td className=" table-column-120 h-[72px] px-4 py-2 w-[400px] text-white text-sm font-normal leading-normal">
-                          {name}
-                        </td>
-                        <td className=" table-column-240 h-[72px] px-4 py-2 w-[400px] text-[#90adcb] text-sm font-normal leading-normal">
-                          {columns}
-                        </td>
-                        <td className=" table-column-360 h-[72px] px-4 py-2 w-[400px] text-[#90adcb] text-sm font-normal leading-normal">
-                          {created}
-                        </td>
-                        <td className=" table-column-480 h-[72px] px-4 py-2 w-60 text-[#90adcb] text-sm font-bold leading-normal tracking-[0.015em]">
-                          Edit | Delete | Duplicate
+                    {posts.tables.map((table) => (
+                      <tr key={table.tableId} className="border-t border-t-[#314d68]">
+                        <td className="h-[72px] px-4 py-2 text-white text-sm">{table.tableName}</td>
+                        <td className="h-[72px] px-4 py-2 text-[#90adcb] text-sm">{table.description || "—"}</td>
+                        <td className="h-[72px] px-4 py-2 text-[#90adcb] text-sm">{table.columns.length}</td>
+                        <td className="h-[72px] px-4 py-2 text-[#90adcb] text-sm">{new Date(table.created_at).toLocaleDateString()}</td>
+                        <td className="h-[72px] px-4 py-2 text-[#90adcb] text-sm">{new Date(table.modify_date).toLocaleDateString()}</td>
+                        <td className="h-[72px] px-4 py-2 text-[#90adcb] text-sm flex gap-3">
+                          <Eye className="cursor-pointer hover:text-[#4089d7]" onClick={() => handleViewTable(table.tableId)} />
+                          <SquarePen className="cursor-pointer hover:text-[#4089d7]" />
+                          <Trash className="cursor-pointer hover:text-[#4089d7]" onClick={() => { setIsDelete(true); setDeleteItemId(table.tableId); setDeleteItemName(table.tableName); }} />
                         </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
-            </div>
+            )}
           </div>
         </div>
+
+       {isOpen && (
+  <div className="absolute top-0 left-0 bg-[#182634a1] w-full h-screen z-30 flex justify-center items-center">
+    <TableCreator
+      setIsOpen={setIsOpen}
+      onSaveTable={handleSaveTable}
+      tableData={
+        viewTable
+          ? {
+              tableName: viewTable.tableName,
+              description: viewTable.description,
+              columns: viewTable.columns.map((col) => ({
+                name: col.name,
+                type: col.type,
+                isPrimary: col.isPrimary,
+                isNullable: col.isNullable,
+                description: col.description || "",
+                isForeign: false,        // added for TableCreator
+                referencesTable: "",     // added for TableCreator
+              })),
+            }
+          : undefined
+      }
+      disabled={isViewMode}
+    />
+  </div>
+)}
+
+
+        {isDelete && (
+          <DeletePopup
+            setIsDelete={setIsDelete}
+            deleteItemId={deleteItemId}
+            setDeleteItemId={setDeleteItemId}
+            deleteItemName={deleteItemName}
+            setDeleteItemName={setDeleteItemName}
+            onDelete={handleDelete}
+          />
+        )}
+
+        {toast && (
+          <Toast
+            message={toast.message}
+            type={toast.type}
+            onClose={() => setToast(null)}
+          />
+        )}
       </div>
+    );
+  };
 
-      {isOpen && (
-        <div className="absolute top-0 left-0 bg-[#182634a1] w-full h-screen z-30 flex justify-center items-center">
-          <TableCreator setIsOpen={setIsOpen} />
-        </div>
-      )}
-    </div>
-  );
-};
-
-export default Tables;
+  export default Tables;

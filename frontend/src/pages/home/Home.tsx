@@ -141,15 +141,16 @@ const Home = () => {
                     <th className="px-4 py-3 text-left text-white w-[400px] text-sm font-medium">
                       Description
                     </th>
+                     <th className="px-4 py-3 text-left text-white w-[400px] text-sm font-medium">
+                      Columns Count
+                    </th>
                     <th className="px-4 py-3 text-left text-white w-[400px] text-sm font-medium">
                       Created
                     </th>
                     <th className="px-4 py-3 text-left text-white w-[400px] text-sm font-medium">
                       Updated
                     </th>
-                    <th className="px-4 py-3 text-left text-white w-[400px] text-sm font-medium">
-                      Columns Count
-                    </th>
+                   
                   </tr>
                 </thead>
                 <tbody>
