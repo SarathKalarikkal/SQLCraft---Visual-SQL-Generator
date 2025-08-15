@@ -21,7 +21,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
 
-        <Route path="/main*" element={<MainLayout />}>
+        <Route path="/main/*" element={<MainLayout />} >
           <Route path="home" element={<Home />} />
           <Route path="tables" element={<Tables />} />
           <Route path="storedProcedures" element={<StoredProcedure />} />
