@@ -10,7 +10,7 @@ const [isMenu, setIsMenu] =useState<boolean>(false)
 
   return (
     <div
-      className=" flex size-full min-h-screen h-screen  flex-col bg-[#101a23] dark group/design-root "
+      className=" flex size-full min-h-screen h-screen  flex-col dark:bg-[#101a23]  group/design-root "
       style={{ fontFamily: "Inter, Noto Sans, sans-serif" }}
     >
       <div className="layout-container flex h-full grow flex-col">

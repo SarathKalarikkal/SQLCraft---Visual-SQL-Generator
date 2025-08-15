@@ -18,124 +18,105 @@ const TableCreator = ({
   ];
 
   return (
-    <div className="flex flex-col bg-[#101a23] dark group/design-root root w-[90%] h-[90%] overflow-auto p-10 rounded-md">
-      <div className="layout-container flex h-full grow flex-col">
-        <div className="flex flex-1 justify-center">
-          <div className="layout-content-container flex flex-col flex-1">
-           <div className="flex flex-row justify-between items-center">
-             <h2 className="text-white text-[28px] font-bold px-4 pb-3 ">
-              Create Table
-            </h2>
-             <button onClick={()=>setIsOpen(false)} className="h-10 px-4 bg-[#223649] hover:bg-[#314d68] text-white text-sm font-bold rounded-lg cursor-pointer">
-                 Close
-                </button>
-           </div>
+   <>
+   <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-md">
+  <div
+    className="flex flex-col bg-[#101a23] rounded-xl shadow-2xl w-[80%] h-[80%] overflow-hidden border border-white/10"
+    style={{ fontFamily: 'Inter, Noto Sans, sans-serif' }}
+  >
+    {/* Header */}
+    <div className="flex items-center justify-between px-6 py-4 bg-[#223649] border-b border-white/10 shrink-0">
+      <h2 className="text-white text-2xl font-bold tracking-tight">Create Table</h2>
+      <button
+        onClick={() => setIsOpen(false)}
+        className="px-4 py-2 bg-[#314d68] hover:bg-[#3f5d7d] text-white text-sm font-semibold rounded-lg transition-colors"
+      >
+        Close
+      </button>
+    </div>
 
-            {/* Table Name */}
-            <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
-              <label className="flex flex-col min-w-40 flex-1">
-                <p className="text-white text-base font-medium pb-2">
-                  Table Name
-                </p>
-                <input
-                  placeholder="Enter table name"
-                  className="form-input h-14 text-white bg-[#182634] border border-[#314d68] rounded-lg p-[15px] text-base placeholder:text-[#90adcb]"
-                  name="table"
-                    type="text"
-                />
-              </label>
-            </div>
+    {/* Scrollable Content */}
+    <div className="flex-1 overflow-y-auto px-6 py-4 space-y-6">
+      {/* Table Name */}
+      <div className="max-w-lg">
+        <label className="block text-white font-medium mb-2">Table Name</label>
+        <input
+          type="text"
+          placeholder="Enter table name"
+          className="w-full h-14 rounded-lg border border-[#314d68] bg-[#182634] text-white placeholder-[#90adcb] px-4 focus:outline-none focus:ring-2 focus:ring-[#0c7ff2] transition-all"
+        />
+      </div>
 
-            {/* Columns */}
-            <h3 className="text-white text-lg font-bold px-4 pb-2 pt-4">
-              Columns
-            </h3>
-            <div className="px-4 py-3 containerQuery">
-              <div className="flex overflow-hidden rounded-lg border border-[#314d68] bg-[#101a23]">
-                <table className="flex-1">
-                  <thead>
-                    <tr className="bg-[#182634]">
-                      <th className="column120 px-4 py-3 text-left text-white text-sm font-medium`">
-                        Column Name
-                      </th>
-                      <th className="column240 px-4 py-3 text-left text-white text-sm font-medium">
-                        Data Type
-                      </th>
-                      <th className="column360 px-4 py-3 text-left text-white text-sm font-medium">
-                        Constraints
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {Columns.map((col, i) => (
-                      <tr key={i} className="border-t border-t-[#314d68]">
-                        <td className="column120 h-[72px] px-4 py-2 text-white text-sm">
-                          {col.name}
-                        </td>
-                        <td className="column240 h-[72px] px-4 py-2 text-[#90adcb] text-sm">
-                          {col.type}
-                        </td>
-                        <td className="column360 h-[72px] px-4 py-2 text-[#90adcb] text-sm">
-                          {col.constraint}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
+      {/* Columns Table */}
+      <div>
+        <h3 className="text-white text-lg font-semibold mb-3">Columns</h3>
+        <div className="overflow-hidden rounded-lg border border-[#314d68] bg-[#101a23]">
+          <table className="w-full">
+            <thead>
+              <tr className="bg-[#182634]">
+                <th className="px-4 py-3 text-left text-white text-sm font-medium">Column Name</th>
+                <th className="px-4 py-3 text-left text-white text-sm font-medium">Data Type</th>
+                <th className="px-4 py-3 text-left text-white text-sm font-medium">Constraints</th>
+              </tr>
+            </thead>
+            <tbody>
+              {Columns.map((col, i) => (
+                <tr key={i} className="border-t border-[#314d68]">
+                  <td className="px-4 py-2 text-white text-sm">{col.name}</td>
+                  <td className="px-4 py-2 text-[#90adcb] text-sm">{col.type}</td>
+                  <td className="px-4 py-2 text-[#90adcb] text-sm">{col.constraint}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <button className="mt-3 px-4 py-2 bg-[#223649] hover:bg-[#314d68] text-white rounded-lg text-sm font-semibold">
+          Add Column
+        </button>
+      </div>
 
-            <div className="flex px-4 py-3 justify-start">
-              <button className="h-10 px-4 bg-[#223649] text-white text-sm font-bold rounded-lg">
-                Add Column
-              </button>
-            </div>
+      {/* Relationships */}
+      <div>
+        <h3 className="text-white text-lg font-semibold mb-3">Relationships</h3>
 
-            {/* Relationships */}
-            <h3 className="text-white text-lg font-bold px-4 pb-2 pt-4">
-              Relationships
-            </h3>
+        <div className="max-w-lg space-y-4">
+          <div>
+            <label className="block text-white font-medium mb-2">Related Table</label>
+            <select className="w-full h-14 rounded-lg border border-[#314d68] bg-[#182634] text-white px-4 focus:outline-none focus:ring-2 focus:ring-[#0c7ff2]">
+              <option>Select a table</option>
+              <option>two</option>
+              <option>three</option>
+            </select>
+          </div>
 
-            <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
-              <label className="flex flex-col min-w-40 flex-1">
-                <p className="text-white text-base font-medium pb-2">
-                  Related Table
-                </p>
-                <select className="form-input h-14 text-white bg-[#182634] border border-[#314d68] rounded-lg p-[15px]">
-                  <option>Select a table</option>
-                  <option>two</option>
-                  <option>three</option>
-                </select>
-              </label>
-            </div>
-
-            <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
-              <label className="flex flex-col min-w-40 flex-1">
-                <p className="text-white text-base font-medium pb-2">
-                  Foreign Key
-                </p>
-                <select className="form-input h-14 text-white bg-[#182634] border border-[#314d68] rounded-lg p-[15px]">
-                  <option>Select a column</option>
-                  <option>two</option>
-                  <option>three</option>
-                </select>
-              </label>
-            </div>
-
-            <div className="flex justify-stretch">
-              <div className="flex flex-1 gap-3 px-4 py-3 justify-end">
-                <button className="h-10 px-4 bg-[#223649] text-white text-sm font-bold rounded-lg">
-                  Preview SQL
-                </button>
-                <button onClick={()=>setIsOpen(false)} className="h-10 px-4 bg-[#0c7ff2] text-white text-sm font-bold rounded-lg">
-                  Save Table
-                </button>
-              </div>
-            </div>
+          <div>
+            <label className="block text-white font-medium mb-2">Foreign Key</label>
+            <select className="w-full h-14 rounded-lg border border-[#314d68] bg-[#182634] text-white px-4 focus:outline-none focus:ring-2 focus:ring-[#0c7ff2]">
+              <option>Select a column</option>
+              <option>two</option>
+              <option>three</option>
+            </select>
           </div>
         </div>
       </div>
     </div>
+
+    {/* Footer */}
+    <div className="flex justify-end gap-3 px-6 py-4 bg-[#223649] border-t border-white/10 shrink-0">
+      <button className="px-4 py-2 bg-[#314d68] text-white rounded-lg hover:bg-[#3f5d7d] transition-colors">
+        Preview SQL
+      </button>
+      <button
+        onClick={() => setIsOpen(false)}
+        className="px-4 py-2 bg-[#0c7ff2] text-white rounded-lg hover:bg-[#0b6ad4] transition-colors"
+      >
+        Save Table
+      </button>
+    </div>
+  </div>
+</div>
+
+   </>
   );
 };
 

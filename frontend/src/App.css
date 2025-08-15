@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
-@theme {
+/* @theme {
+  --color-background: white;
   --color-neon: #ff6a00;
   --color-dark: #0e0f11;
   --color-card: #1b1d23;
@@ -9,9 +10,21 @@
   --color-mint-500: oklch(0.72 0.11 178);
 }
 
+@theme dark {
+  --color-background: #101a23;
+  --color-neon: #ff6a00;
+  --color-dark: #0e0f11;
+  --color-card: #1b1d23;
+  --color-grid: #2c2e33;
+  --color-accent: #00ffd1;
+  --color-mint-500: oklch(0.72 0.11 178);
+} */
 
+::-webkit-scrollbar{
+  display: none;
+}
 
-@container (max-width: 120px) {
+/* @container (max-width: 120px) {
   .table-column-120 {
     display: none;
   }
@@ -30,5 +43,5 @@
   .table-column-480 {
     display: none;
   }
-}
+} */
 

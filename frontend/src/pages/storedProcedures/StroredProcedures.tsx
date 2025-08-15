@@ -203,7 +203,7 @@ const [isOpen, setIsOpen] =useState<boolean>(false)
 
     {
       isOpen &&
-      <div className="absolute top-0 left-0 bg-[#182634a1] w-full h-screen z-30 flex justify-center items-center">
+      <div className="absolute top-0 left-0 backdrop-blur-sm bg-[#0d151d00] w-full h-screen z-30 flex justify-center items-center">
           <SPcreator setIsOpen={setIsOpen}/>
       </div>
     }
