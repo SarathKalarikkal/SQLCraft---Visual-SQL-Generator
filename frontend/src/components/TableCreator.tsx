@@ -14,6 +14,7 @@ interface Column {
 
 interface TableCreatorProps {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  isUpdate?: boolean;
   onSaveTable: (table: any) => void;
   tableData?: {
     tableName: string;
@@ -26,6 +27,7 @@ interface TableCreatorProps {
 const TableCreator = ({
   setIsOpen,
   onSaveTable,
+  isUpdate,
   tableData,
   disabled = false,
 }: TableCreatorProps) => {
@@ -319,7 +321,7 @@ const TableCreator = ({
                 onClick={handleSave}
                 className="px-4 py-2 bg-[#0c7ff2] text-white rounded-lg hover:bg-[#0b6ad4] transition-colors"
               >
-                Save Table
+               {isUpdate ? "Update Table" : "Save Table"}
               </button>
             )}
           </div>

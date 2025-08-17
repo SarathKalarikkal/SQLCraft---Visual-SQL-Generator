@@ -353,3 +353,110 @@ export const getATable = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 }
+
+export const updateATable = async (req, res) => {
+  const { id } = req.params;
+  const { tableName, columns, description } = req.body;
+
+  if (!id || !tableName || !Array.isArray(columns)) {
+    return res.status(400).json({
+      error: "Missing required fields: id, tableName, columns"
+    });
+  }
+
+  let pool;
+  let transaction;
+
+  try {
+    pool = await sql.connect(dbConfig);
+
+    transaction = new sql.Transaction(pool);
+    await transaction.begin();
+    const request = new sql.Request(transaction);
+
+    // Get current table name
+    const result = await request
+      .input("tableId", sql.UniqueIdentifier, id)
+      .query(`SELECT table_name FROM app_tables WHERE id = @tableId`);
+
+    if (result.recordset.length === 0) {
+      await transaction.rollback();
+      return res.status(404).json({ error: "Table not found" });
+    }
+
+    const oldTableName = result.recordset[0].table_name;
+
+    // Drop the old physical table
+    await request.query(`DROP TABLE [${oldTableName}]`);
+
+    // Generate SQL to recreate the table with new definition
+    const newTableScript = generateCreateTableTemplate(
+      tableName,
+      columns,
+      description
+    );
+
+    // Create the new physical table
+    await request.batch(newTableScript);
+
+    // Update metadata in app_tables
+    await new sql.Request(transaction)
+      .input("tableId", sql.UniqueIdentifier, id)
+      .input("tableName", sql.NVarChar, tableName)
+      .input("description", sql.NVarChar, description || "")
+      .query(`
+        UPDATE app_tables
+        SET table_name = @tableName,
+            description = @description
+        WHERE id = @tableId
+      `);
+
+    // Delete old column metadata
+    await new sql.Request(transaction)
+      .input("tableId", sql.UniqueIdentifier, id)
+      .query(`DELETE FROM app_columns WHERE table_id = @tableId`);
+
+    // Insert new column metadata
+    for (const col of columns) {
+      const colId = uuidv4();
+      await new sql.Request(transaction)
+        .input("id", sql.UniqueIdentifier, colId)
+        .input("table_id", sql.UniqueIdentifier, id)
+        .input("column_name", sql.NVarChar, col.name)
+        .input("data_type", sql.NVarChar, col.type)
+        .input("is_primary", sql.Bit, col.isPrimary ? 1 : 0)
+        .input("is_foreign", sql.Bit, col.isForeign ? 1 : 0)
+        .input("references_table", sql.NVarChar, col.referencesTable || null)
+        .input("references_column", sql.NVarChar, col.referencesColumn || null)
+        .input("is_nullable", sql.Bit, col.isNullable ? 1 : 0)
+        .input("description", sql.NVarChar, col.description || "")
+        .query(`
+          INSERT INTO app_columns (
+            id, table_id, column_name, data_type, is_primary, is_foreign,
+            references_table, references_column, is_nullable, description
+          )
+          VALUES (
+            @id, @table_id, @column_name, @data_type, @is_primary, @is_foreign,
+            @references_table, @references_column, @is_nullable, @description
+          )
+        `);
+    }
+
+    // Commit transaction
+    await transaction.commit();
+
+    res.status(200).json({
+      message: `✅ Table "${oldTableName}" updated successfully.`,
+      tableId: id,
+      newTableName: tableName
+    });
+
+  } catch (error) {
+    if (transaction && !transaction._aborted) {
+      await transaction.rollback();
+    }
+    console.error("Error updating table:", error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
